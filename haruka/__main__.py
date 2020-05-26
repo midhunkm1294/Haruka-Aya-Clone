@@ -20,13 +20,18 @@ from haruka.modules.helper_funcs.misc import paginate_modules
 from haruka.modules.translations.strings import tld, tld_help 
 from haruka.modules.connection import connected
 
-PM_START = """Hello {}, My Name is {}!
+PM_START = """Hey!{}, My Name is Mrs. Friday! 
+I am Here To Manage Your Group! 
+I Am More Advance Than Others Bots! 
+I Come With Some Advance Features!! 
+Add Me To Group Now!! 
+And See How I Help To Manage Your Group 🙂!! 
+[For Any Support Or Help Join Here!](t.me/mrsfridaysupport) 
+[Click Here To Help You To Manage Your Awesome Group!](http://t.me/mrsfridaybot?startgroup=true)
+Thank You ❤ 
 
-You know how hard it is sometimes to manage group so here is the solution for you
+"""
 
-I'm group manager bot 🃏
-
-Click /help or Help button below to find out more about how to use me to my full potential.
 """
 
 
@@ -95,7 +100,7 @@ def send_help(chat_id, text, keyboard=None):
 @run_async
 def test(bot: Bot, update: Update):
     #pprint(eval(str(update)))
-    #update.effective_message.reply_text("Hola tester! _I_ *have* `markdown`", parse_mode=ParseMode.MARKDOWN)
+    #update.effective_message.reply_text("Hola Boss! _I_ *have* `markdown`", parse_mode=ParseMode.MARKDOWN)
     update.effective_message.reply_text("This person edited a message")
     print(update.effective_message)
 
@@ -130,7 +135,7 @@ def start(bot: Bot, update: Update, args: List[str]):
         else:
             send_start(bot, update)
     else:
-        update.effective_message.reply_text("I'm alive")
+        update.effective_message.reply_text("MY STATUS - ✅ Alive ")
 
 def send_start(bot, update):
     #Try to remove old message
@@ -144,9 +149,9 @@ def send_start(bot, update):
     first_name = update.effective_user.first_name 
     text = PM_START
 
-    keyboard = [[InlineKeyboardButton(text="🇮🇳 Language", callback_data="set_lang_")]]
-    keyboard += [[InlineKeyboardButton(text="🛠 Reporting", callback_data="cntrl_panel_M"), 
-        InlineKeyboardButton(text="❔ Help", callback_data="help_back")]]
+    keyboard = [[InlineKeyboardButton(text="🉐Language🉐", callback_data="set_lang_")]]
+    keyboard += [[InlineKeyboardButton(text="❌Reporting❌", callback_data="cntrl_panel_M"), 
+        InlineKeyboardButton(text="❓Help❓", callback_data="help_back")]]
 
     update.effective_message.reply_text(PM_START.format(escape_markdown(first_name), bot.first_name), reply_markup=InlineKeyboardMarkup(keyboard), disable_web_page_preview=True, parse_mode=ParseMode.MARKDOWN)
 
@@ -161,7 +166,7 @@ def control_panel(bot, update):
 
         update.effective_message.reply_text("Contact me in PM to access the control panel.",
                                             reply_markup=InlineKeyboardMarkup(
-                                                [[InlineKeyboardButton(text="Control Panel",
+                                                [[InlineKeyboardButton(text="🔱Control Panel🔱",
                                                                        url=f"t.me/{bot.username}?start=controlpanel")]]))
         return
 
@@ -177,12 +182,12 @@ def control_panel(bot, update):
 
         LOGGER.info(query.data)
     else:
-        M_match = "ThaNos is the best bot" #LMAO, don't uncomment
+        M_match = "I am he best bot" 
 
     if M_match:
-        text = "*Control panel* 🛠"
+        text = "🛠️ *Control panel* 🛠"
 
-        keyboard = [[InlineKeyboardButton(text="👤 My settings", callback_data="cntrl_panel_U(1)")]]
+        keyboard = [[InlineKeyboardButton(text="👤 My settings 👤", callback_data="cntrl_panel_U(1)")]]
 
         #Show connected chat and add chat settings button
         conn = connected(bot, update, chat, user.id, need_admin=False)
@@ -195,12 +200,12 @@ def control_panel(bot, update):
             member = chatG.get_member(user.id)
             if member.status in ('administrator', 'creator'):
                 text += f"\nConnected chat - *{chatG.title}* (you {member.status})"
-                keyboard += [[InlineKeyboardButton(text="👥 Group settings", callback_data="cntrl_panel_G_back")]]
+                keyboard += [[InlineKeyboardButton(text="👥 Group settings 👥", callback_data="cntrl_panel_G_back")]]
             elif user.id in SUDO_USERS:
                 text += f"\nConnected chat - *{chatG.title}* (you sudo)"
-                keyboard += [[InlineKeyboardButton(text="👥 Group settings (SUDO)", callback_data="cntrl_panel_G_back")]]
+                keyboard += [[InlineKeyboardButton(text="👥 Group settings (SUDO) 👥", callback_data="cntrl_panel_G_back")]]
             else:
-                text += f"\nConnected chat - *{chatG.title}* (you aren't an admin!)"
+                text += f"\nConnected chat - *{chatG.title}* (you aren't an admin! First Be a admin !)"
         else:
             text += "\nNo chat connected!"
 
@@ -228,7 +233,7 @@ def control_panel(bot, update):
             query.message.reply_text(text=text, arse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(keyboard))
 
         elif back_match:
-            text = "*User control panel* 🛠"
+            text = "🛠️ *User control panel* 🛠"
             
             query.message.reply_text(text=text, parse_mode=ParseMode.MARKDOWN,
                     reply_markup=InlineKeyboardMarkup(paginate_modules(user.id, 0, USER_SETTINGS, "cntrl_panel_U")))
@@ -402,7 +407,7 @@ def get_help(bot: Bot, update: Update):
             help_txt = HELPABLE[module].__help__
 
         text = tld(chat.id, "Here is the help for the *{}* module:\n{}").format(mod_name, help_txt)
-        send_help(chat.id, text, InlineKeyboardMarkup([[InlineKeyboardButton(text=tld(chat.id, "Back"), callback_data="help_back")]]))
+        send_help(chat.id, text, InlineKeyboardMarkup([[InlineKeyboardButton(text=tld(chat.id, "Back⏪"), callback_data="help_back")]]))
 
     else:
         send_help(chat.id, tld(chat.id, "send-help").format(dispatcher.bot.first_name, "" if not ALLOW_EXCL else tld(
@@ -414,7 +419,7 @@ def send_settings(chat_id, user_id, user=False):
         if USER_SETTINGS:
             settings = "\n\n".join(
                 "*{}*:\n{}".format(mod.__mod_name__, mod.__user_settings__(user_id)) for mod in USER_SETTINGS.values())
-            dispatcher.bot.send_message(user_id, "These are your current settings:" + "\n\n" + settings,
+            dispatcher.bot.send_message(user_id, "These are your current settings🛠️:" + "\n\n" + settings,
                                         parse_mode=ParseMode.MARKDOWN)
 
         else:
@@ -633,7 +638,7 @@ def process_update(self, update):
 
         # Dispatch any error.
         except TelegramError as te:
-            self.logger.warning('A TelegramError was raised while processing the Update')
+            self.logger.warning('A Telegram Error was raised while processing the Update')
 
             try:
                 self.dispatch_error(update, te)
